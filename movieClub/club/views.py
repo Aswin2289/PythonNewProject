@@ -42,14 +42,20 @@ class UserListView(APIView):
         return Response({"users": serializer_class.data}, status=status.HTTP_200_OK)
 
     def delete(self, request):
+        data = request.data
         user_id = request.query_params['id']
+
         try:
-            user = User.objects.exclude(status=0).filter(id=user_id)
-            serializer = self.serializer_class(user, many=True)
-            return Response("Deleted", status=status.HTTP_200_OK)
+            user = User.objects.get(id=user_id)
+            if user is not None:
+                serializer = self.serializer_class(user, data=data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                return Response("Deleted", status=status.HTTP_200_OK)
+
 
         except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response("Invalid Id",status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
