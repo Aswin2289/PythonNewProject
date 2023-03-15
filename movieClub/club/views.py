@@ -41,6 +41,16 @@ class UserListView(APIView):
         serializer_class = self.serializer_class(user, many=True)
         return Response({"users": serializer_class.data}, status=status.HTTP_200_OK)
 
+    def delete(self, request):
+        user_id = request.query_params['id']
+        try:
+            user = User.objects.exclude(status=0).filter(id=user_id)
+            serializer = self.serializer_class(user, many=True)
+            return Response("Deleted", status=status.HTTP_200_OK)
+
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class LoginView(APIView):
     serializer_class = AuthTokenSerializer

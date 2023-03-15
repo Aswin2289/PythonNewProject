@@ -40,6 +40,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField("email address", unique=True)
+    status=models.IntegerField(blank=False,default=1)
+    role=models.IntegerField(blank=False,default=1)
 
     USERNAME_FIELD = "email"  # make the user log in with the email
     REQUIRED_FIELDS = ["username"]
