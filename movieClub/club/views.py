@@ -1,19 +1,21 @@
-import jwt
-from django.conf import settings
+# import jwt
+# from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import render
+# from django.shortcuts import render
 from rest_framework import status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.tokens import AccessToken
+# from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth import authenticate
 
 from .models import User
 from .serializer import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework_simplejwt.authentication import JWTAuthentication
+JWT_authenticator = JWTAuthentication()
 
 # Create your views here.
 
@@ -37,6 +39,7 @@ class UserListView(APIView):
     serializer_class = UserSerializer
 
     def get(self, request):
+        print(request)
         user = User.objects.all()
         serializer_class = self.serializer_class(user, many=True)
         return Response({"users": serializer_class.data}, status=status.HTTP_200_OK)
@@ -46,16 +49,22 @@ class UserListView(APIView):
         user_id = request.query_params['id']
 
         try:
+            print("Inside try first line")
             user = User.objects.get(id=user_id)
             if user is not None:
-                serializer = self.serializer_class(user, data=data, partial=True)
+
+                serializer = self.serializer_class(user, partial=True)
+                for obj in serializer.data:
+                    print("Inside try 2 line")
+                    obj['status'] = 0
                 if serializer.is_valid():
+                    print("Inside try 3 line")
                     serializer.save()
                 return Response("Deleted", status=status.HTTP_200_OK)
 
 
         except:
-            return Response("Invalid Id",status=status.HTTP_400_BAD_REQUEST)
+            return Response("Invalid Id", status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
@@ -85,4 +94,19 @@ class LoginView(APIView):
                              # 'access': str(token_string),
                              })
         else:
-            return Response({'error': 'Invalid credentials'})
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TokenDecode(APIView):
+    def post(self, request):
+        JWT_authenticator = JWTAuthentication()
+        data = request.data
+        response = JWT_authenticator.authenticate(request)
+        if response is not None:
+            # unpacking
+            user, token = response
+            print("this is decoded token claims", token.payload)
+            return Response({token.payload},status=status.HTTP_200_OK)
+        else:
+            print("no token is provided in the header or the header is missing")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
