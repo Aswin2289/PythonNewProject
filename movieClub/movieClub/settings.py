@@ -43,12 +43,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     'club',
+
 ]
 
 AUTH_USER_MODEL = 'club.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -116,9 +119,11 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Club",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
+    "ROLE_FIELD": "role",
     "USER_USERNAME_FIELD": "username",
     "USER_ID_CLAIM": "user_id",
-    "USER_USERNAME_CLAIM": "username",
+    "ROLE_CLAIM": "role",
+
     "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
     "ALGORITHM": "HS256",
     "SIGNING_KEY": settings.SECRET_KEY,
@@ -137,10 +142,12 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-
-)
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+#     (
+#     '*'
+#     # 'http://localhost:3000'
+#
+# )
 CORS_ALLOW_HEADERS = ['*']
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True

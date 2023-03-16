@@ -15,7 +15,9 @@ from .serializer import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
 JWT_authenticator = JWTAuthentication()
+
 
 # Create your views here.
 
@@ -97,16 +99,35 @@ class LoginView(APIView):
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ChangePassword(APIView):
+    permission_classes = [IsAuthenticated]
+    serializers_classes = UserSerializer
+
+    def put(self, request):
+        password = request.data['password']
+        user_id = request.data['user_id']
+        new_password = request.data['new_password']
+        user = User.objects.get(pk=user_id)
+        print("inside if", password, user_id, new_password, user.username)
+
+        if user.check_password(password):
+            user.set_password(new_password)
+            user.save()
+            return Response({'username': user.username, 'password': user.password, 'email': user.email})
+        else:
+            return Response({'error': 'Failed to change password'})
+
+
 class TokenDecode(APIView):
     def post(self, request):
         JWT_authenticator = JWTAuthentication()
-        data = request.data
+        data = request.data['token']
         response = JWT_authenticator.authenticate(request)
         if response is not None:
             # unpacking
             user, token = response
             print("this is decoded token claims", token.payload)
-            return Response({token.payload},status=status.HTTP_200_OK)
+            return Response(token.payload, status=status.HTTP_200_OK)
         else:
             print("no token is provided in the header or the header is missing")
             return Response(status=status.HTTP_400_BAD_REQUEST)
