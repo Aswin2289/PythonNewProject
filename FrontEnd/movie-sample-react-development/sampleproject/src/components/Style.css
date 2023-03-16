@@ -1,0 +1,70 @@
+.my-component {
+    background-color: rgba(69, 69, 122, 0.384);
+    color: rgb(49, 49, 49);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.my-footer {
+    background-color: #0a1024;
+    color: rgb(49, 49, 49);
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.my-home {
+
+    color: azure;
+    color: rgb(49, 49, 49);
+    padding: 100px;
+    background-image: url("/src/assets/hero.jpg");
+    background-size: cover;
+
+}
+.login
+{ background-color: #0a10246c;
+    border-radius: 10%;
+    text-align: center;
+    padding: 5%;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-bottom: 5%;
+    margin-top: 5%;
+}
+
+.button {
+    background-color: #091123; /* Green */
+    border: 5%;
+    color: white;
+    border-radius: 20%;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+
+.links {
+    padding-left:20px;
+    color: bisque;
+    text-decoration: none;
+}
+
+.Navbar {
+    background-color: #0a1024;
+    color: azure;
+
+}
+input{
+    text-align: center;
+    padding: 5px;
+    color: #0a1024;
+}
+.about {
+    background-color: #0a10244d;
+    text-align: center;
+    padding: 2%;
+    border-color: #091123;
+    border: 10px;          ;
+}
